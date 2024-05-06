@@ -5,6 +5,41 @@
 
 #let show_multiply(m, n) = $ #show_matrix(m) #show_matrix(n) = #show_matrix(multiply_matrix(m,n)) $
 
+//demonstration of transpose 
+
+#let a = (
+  (1,2,3),
+  (4,5,6)
+)
+
+$ #show_matrix(a)^top = #show_matrix(transpose_matrix(a)) $
+
+#pagebreak()
+
+// demonstration of minor
+
+#let a = (
+  (1,2,3),
+  (4,5,6),
+  (7,8,9)
+)
+
+If $a = #show_matrix(a)$ then the minor at $(3,1)$ is $#show_matrix(minor(a,3,1))$, the minor at $(2,2)$ is $#show_matrix(minor(a,2,2))$, and the minor at $(1,3)$ is $#show_matrix(minor(a,1,3))$.
+
+#pagebreak()
+
+// demonstration of determinant 
+
+#let a = (
+  (1,2,3),
+  (4,6,8),
+  (5,7,-1)
+)
+
+$ "det"(#show_matrix(a)) = #determinant(a) $
+
+#pagebreak()
+
 = This Matrix Has Interesting Powers
 
 // demonstration showing a^3 = i, a^4 = a

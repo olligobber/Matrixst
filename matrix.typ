@@ -1,3 +1,4 @@
+// verifies a matrix is valid and returns (height, width) 
 #let matrix_dim(m) = {
   // check input is valid types
   if type(m) != array {
@@ -25,12 +26,14 @@
   return (numrows, numcols)
 }
 
+// show a matrix in a math environment
 #let show_matrix(m) = {
   // check input is valid
   let _ = matrix_dim(m)
   return math.mat(..m)
 }
 
+// multiply two matrices in the given order
 #let multiply_matrix(m, n) = {
   // check input is valid and get dimensions
   let (firstrows, firstcols) = matrix_dim(m)
@@ -60,7 +63,14 @@
   return result
 }
 
+// get the identity matrix of a given size 
 #let identity_matrix(n) = {
+  if (int(n) != n) {
+    panic("error when generating identity matrix, size must be an integer")
+  }
+  if (n < 1) {
+    panic("error when generating identity matrix, size must be positive")
+  }
   result = ()
   for i in range(n) {
     result.push(())
@@ -78,6 +88,7 @@
   return result
 }
 
+// raise a matrix to a given power
 #let power_matrix(m, k) = {
   if int(k) != k {
     panic("power must be integer")
@@ -105,7 +116,20 @@
   }
 }
 
+// Get a column vector of length n with its ith component set to 1 and the rest 0
 #let column_basis(n, i) = {
+  if (int(n) != n) {
+    panic("error when generating column basis, size is not an integer")
+  }
+  if (n < 1) {
+    panic("error when generating column basis, size must be positive")
+  }
+  if (int(i) != i) {
+    panic("error when generating column basis, index is not an integer")
+  }
+  if (i < 1 or i > n) {
+    panic("error when generating column basis, index must be between 1 and n")
+  }
   let result = () 
   for j in range(1,n+1) {
     if i == j {
@@ -120,7 +144,20 @@
   return result
 }
 
+// Get a row vector of length n with its ith component set to 1 and the rest 0
 #let row_basis(n, i) = {
+  if (int(n) != n) {
+    panic("error when generating row basis, size is not an integer")
+  }
+  if (n < 1) {
+    panic("error when generating row basis, size must be positive")
+  }
+  if (int(i) != i) {
+    panic("error when generating row basis, index is not an integer")
+  }
+  if (i < 1 or i > n) {
+    panic("error when generating row basis, index must be between 1 and n")
+  }
   let row = ()
   for j in range(1,n+1) {
     if i == j {
@@ -134,4 +171,78 @@
     panic("error when generating row basis, result has wrong size")
   }
   return result
+}
+
+// Tranpose a matrix 
+#let transpose_matrix(m) = {
+  let (in_rows, in_cols) = matrix_dim(m)
+  let out_rows = in_cols 
+  let out_cols = in_rows 
+  let result = ()
+  for i in range(out_rows) {
+    result.push(())
+    for j in range(out_cols) {
+      result.at(-1).push(m.at(j).at(i))
+    }
+  }
+  if (matrix_dim(result) != (out_rows, out_cols)) {
+    panic("error when transposing matrix, result has wrong size")
+  } 
+  return result
+}
+
+// Get the minor of a matrix by deleting row i and column j 
+#let minor(m, i, j) = {
+  let (in_rows, in_cols) = matrix_dim(m) 
+  if (int(i) != i) {
+    panic("error when getting minor of matrix, row index must be an integer")
+  }
+  if (int(j) != j) {
+    panic("error when getting minor of matrix, column index must be an integer")
+  }
+  if (i < 1 or i > in_rows) {
+    panic("error when getting minor of matrix, row index must be between 1 and height of matrix")
+  }
+  if (j < 1 or j > in_cols) {
+    panic("error when getting minor of matrix, column index must be between 1 and width of matrix")
+  }
+  if (in_rows == 1 or in_cols == 1) {
+    panic("error when getting minor of matrix, matrix must be at least 2x2 to get non-empty minor")
+  }
+  let out_rows = in_rows - 1
+  let out_cols = in_cols - 1
+  let result = () 
+  for k in range(in_rows) {
+    if (k == i - 1) {
+      continue
+    }
+    result.push(())
+    for l in range(in_cols) {
+      if (l == j - 1) {
+        continue
+      }
+      result.at(-1).push(m.at(k).at(l))
+    }
+  }
+  if (matrix_dim(result) != (out_rows, out_cols)) {
+    panic("error when getting minor of matrix, result has wrong size")
+  }
+  return result
+}
+
+// Get the determinant of a matrix 
+#let determinant(m) = {
+  let (rows,cols) = matrix_dim(m)
+  if (rows != cols) {
+    panic("error when calculating determinant, matrix must be square")
+  }
+  let n = rows
+  if n == 1 {
+    return m.at(0).at(0)
+  }
+  let det = 0
+  for i in range(n) {
+    det += calc.pow(-1,i) * m.at(0).at(i) * determinant(minor(m, 1, i + 1))
+  }
+  return det
 }
