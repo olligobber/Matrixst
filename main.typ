@@ -3,7 +3,11 @@
 
 #import "matrix.typ": *
 
-#let show_multiply(m, n) = $ #show_matrix(m) #show_matrix(n) = #show_matrix(multiply_matrix(m,n)) $
+#let show_multiply(..ms) = $ 
+  #ms.pos().map(render).join() = #render(multiply(..ms)) 
+$
+
+#let show_power(m, i) = $ #render(m)^#i = #render(power(m,i)) $
 
 //demonstration of transpose 
 
@@ -12,7 +16,7 @@
   (4,5,6)
 )
 
-$ #show_matrix(a)^top = #show_matrix(transpose_matrix(a)) $
+$ #render(a)^top = #render(transpose(a)) $
 
 #pagebreak()
 
@@ -24,7 +28,7 @@ $ #show_matrix(a)^top = #show_matrix(transpose_matrix(a)) $
   (7,8,9)
 )
 
-If $a = #show_matrix(a)$ then the minor at $(3,1)$ is $#show_matrix(minor(a,3,1))$, the minor at $(2,2)$ is $#show_matrix(minor(a,2,2))$, and the minor at $(1,3)$ is $#show_matrix(minor(a,1,3))$.
+If $ a = #render(a) $ then the minor at $(3,1)$ is $ #render(minor(a,3,1)), $ the minor at $(2,2)$ is $ #render(minor(a,2,2)), $ and the minor at $(1,3)$ is $ #render(minor(a,1,3)). $
 
 #pagebreak()
 
@@ -36,7 +40,7 @@ If $a = #show_matrix(a)$ then the minor at $(3,1)$ is $#show_matrix(minor(a,3,1)
   (-1,3,-1)
 )
 
-$ "det"(#show_matrix(a)) = #determinant(a) $
+$ "det"#render(a) = #determinant(a) $
 
 #pagebreak()
 
@@ -49,8 +53,7 @@ $ "det"(#show_matrix(a)) = #determinant(a) $
 )
 #let a-inverse = invert(a)
 
-$ #show_matrix(a)^(-1) = #show_matrix(a-inverse) $
-
+#show_power(a,-1)
 #show_multiply(a,a-inverse)
 #show_multiply(a-inverse,a)
 
@@ -58,7 +61,7 @@ $ #show_matrix(a)^(-1) = #show_matrix(a-inverse) $
 
 = This Matrix Has Interesting Powers
 
-// demonstration showing a^3 = i, a^4 = a
+// demonstration showing powers of a when a^3 is the identity
 
 #let a = (
   (1,0,0),
@@ -67,8 +70,8 @@ $ #show_matrix(a)^(-1) = #show_matrix(a-inverse) $
 )
 
 #{
-  for i in range(2,5) {
-    $ #show_matrix(a)^#i = #show_matrix(power_matrix(a,i)) $
+  for i in range(-3,5) {
+    show_power(a,i)
   }
 }
 
@@ -124,14 +127,11 @@ $ #show_matrix(a)^(-1) = #show_matrix(a-inverse) $
 
 = Invertible Matrices Don't Commute
 
+// demonstration showing matrix multiplication isn't commutative even when the matrices are invertible
+
 #let a = (
   (1,1),
   (1,0)
-)
-
-#let a-inverse = (
-  (0,1),
-  (1,-1)
 )
 
 #let b = (
@@ -139,19 +139,14 @@ $ #show_matrix(a)^(-1) = #show_matrix(a-inverse) $
   (1,1)
 )
 
-#let b-inverse = (
-  (-1,1),
-  (1,0)
-)
-
-#show_multiply(a,a-inverse)
-#show_multiply(b,b-inverse)
+#show_multiply(a,invert(a))
+#show_multiply(b,invert(b))
 #show_multiply(a,b)
 #show_multiply(b,a)
 
 #pagebreak()
 
-#let show_multiply_3(m,n,o) = $ #show_matrix(m) #show_matrix(n) #show_matrix(o) = #show_matrix(multiply_matrix(m,multiply_matrix(n,o))) $
+// demonstration showing multiplying more than two matrices of different dimensions
 
 #let e = (
   (3,0),
@@ -169,9 +164,11 @@ $ #show_matrix(a)^(-1) = #show_matrix(a-inverse) $
   (5,6)
 )
 
-#show_multiply_3(e,f,g)
+#show_multiply(e,f,g)
 
 #pagebreak()
+
+// checking an inverse was computed correctly
 
 #let h = (
   (5, -3),
@@ -184,5 +181,4 @@ $ #show_matrix(a)^(-1) = #show_matrix(a-inverse) $
 )
 
 #show_multiply(h,i)
-
 #show_multiply(i,h)
