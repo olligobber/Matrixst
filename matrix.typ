@@ -251,10 +251,10 @@
   }
   let mt = transpose(m)
   let result = ()
-  for i in range(n) {
+  for i in range(1,n+1) {
     result.push(())
-    for j in range(n) {
-      result.at(-1).push(calc.pow(-1, i+j) * determinant(minor(mt, i+1, j+1)) / det)
+    for j in range(1,n+1) {
+      result.at(-1).push(calc.pow(-1, i+j) * determinant(minor(mt, i, j)) / det)
     }
   }
   if dimension(result) != (n,n) {
