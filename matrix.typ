@@ -189,37 +189,33 @@
 // Get the minor of a matrix by deleting row i and column j 
 #let minor(m, i, j) = {
   let (in_rows, in_cols) = dimension(m) 
-  if (int(i) != i) {
+  if int(i) != i {
     panic("error when getting minor of matrix, row index must be an integer")
   }
-  if (int(j) != j) {
+  if int(j) != j {
     panic("error when getting minor of matrix, column index must be an integer")
   }
-  if (i < 1 or i > in_rows) {
+  if i < 1 or i > in_rows {
     panic("error when getting minor of matrix, row index must be between 1 and height of matrix")
   }
-  if (j < 1 or j > in_cols) {
+  if j < 1 or j > in_cols {
     panic("error when getting minor of matrix, column index must be between 1 and width of matrix")
   }
-  if (in_rows == 1 or in_cols == 1) {
+  if in_rows == 1 or in_cols == 1 {
     panic("error when getting minor of matrix, matrix must be at least 2x2 to get non-empty minor")
   }
   let out_rows = in_rows - 1
   let out_cols = in_cols - 1
   let result = () 
   for k in range(in_rows) {
-    if (k == i - 1) {
-      continue
-    }
+    if k == i - 1 { continue }
     result.push(())
     for l in range(in_cols) {
-      if (l == j - 1) {
-        continue
-      }
+      if l == j - 1 { continue }
       result.at(-1).push(m.at(k).at(l))
     }
   }
-  if (dimension(result) != (out_rows, out_cols)) {
+  if dimension(result) != (out_rows, out_cols) {
     panic("error when getting minor of matrix, result has wrong size")
   }
   return result
@@ -228,7 +224,7 @@
 // Get the determinant of a matrix 
 #let determinant(m) = {
   let (rows,cols) = dimension(m)
-  if (rows != cols) {
+  if rows != cols {
     panic("error when calculating determinant, matrix must be square")
   }
   let n = rows
@@ -245,7 +241,7 @@
 // Get the inverse of a matrix 
 #let invert(m) = {
   let (rows, cols) = dimension(m)
-  if (rows != cols) {
+  if rows != cols {
     panic("error inverting matrix: matrix is not square")
   }
   let n = rows 
