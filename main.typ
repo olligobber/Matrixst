@@ -32,11 +32,27 @@ If $a = #show_matrix(a)$ then the minor at $(3,1)$ is $#show_matrix(minor(a,3,1)
 
 #let a = (
   (1,2,3),
-  (4,6,8),
-  (5,7,-1)
+  (0,2,-1),
+  (-1,3,-1)
 )
 
 $ "det"(#show_matrix(a)) = #determinant(a) $
+
+#pagebreak()
+
+// demonstartion of inverses
+
+#let a = (
+  (1,2,0),
+  (0,2,3),
+  (1,3,1)
+)
+#let a-inverse = invert(a)
+
+$ #show_matrix(a)^(-1) = #show_matrix(a-inverse) $
+
+#show_multiply(a,a-inverse)
+#show_multiply(a-inverse,a)
 
 #pagebreak()
 

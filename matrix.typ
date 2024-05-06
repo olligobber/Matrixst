@@ -246,3 +246,28 @@
   }
   return det
 }
+
+// Get the inverse of a matrix 
+#let invert(m) = {
+  let (rows, cols) = matrix_dim(m)
+  if (rows != cols) {
+    panic("error inverting matrix: matrix is not square")
+  }
+  let n = rows 
+  let det = determinant(m)
+  if det == 0 {
+    panic("error inverting matrix: matrix with zero determinant has no inverse")
+  }
+  let mt = transpose_matrix(m)
+  let result = ()
+  for i in range(n) {
+    result.push(())
+    for j in range(n) {
+      result.at(-1).push(calc.pow(-1, i+j) * determinant(minor(mt, i+1, j+1)) / det)
+    }
+  }
+  if matrix_dim(result) != (n,n) {
+    panic("error inverting matrix: result is wrong size")
+  }
+  return result
+}
