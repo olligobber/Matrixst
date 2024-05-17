@@ -1,15 +1,10 @@
 #set page(width: auto, height:auto)
-#set math.mat(delim:"[")
 
 #import "matrix.typ": *
 
-#let show_multiply(..ms) = $ 
-  #ms.pos().map(render).join() = #render(multiply(..ms)) 
-$
-
-#let show_power(m, i) = $ #render(m)^#i = #render(power(m,i)) $
-
 //demonstration of transpose 
+
+= Matrix Transpose
 
 #let a = (
   (1,2,3),
@@ -21,6 +16,8 @@ $ #render(a)^top = #render(transpose(a)) $
 #pagebreak()
 
 // demonstration of minor
+
+= Matrix Minors
 
 #let a = (
   (1,2,3),
@@ -34,6 +31,8 @@ If $ a = #render(a) $ then the minor at $(3,1)$ is $ #render(minor(a,3,1)), $ th
 
 // demonstration of determinant 
 
+= Matrix Determinant
+
 #let a = (
   (1,2,3),
   (0,2,-1),
@@ -45,6 +44,8 @@ $ "det"#render(a) = #determinant(a) $
 #pagebreak()
 
 // demonstartion of inverses
+
+= Matrix Inverse
 
 #let a = (
   (1,2,0),
@@ -148,6 +149,9 @@ $ "det"#render(a) = #determinant(a) $
 
 // demonstration showing multiplying more than two matrices of different dimensions
 
+= #[Multiplying Multiple Matrices \
+with Many Measurements]
+
 #let e = (
   (3,0),
   (-1,5)
@@ -168,17 +172,43 @@ $ "det"#render(a) = #determinant(a) $
 
 #pagebreak()
 
-// checking an inverse was computed correctly
+= Building a Matrix out of Column Vectors
 
-#let h = (
-  (5, -3),
-  (7,-4)
+#let v1 = column_vector(1,2,3,4)
+#let v2 = column_vector(1,-1,2,1)
+#let v3 = column_vector(0,0,1,0)
+#let v4 = column_vector(-1,0,1,-1)
+#let vs = (v1,v2,v3,v4)
+
+#v(1em)
+
+#align(center, 
+  range(4)
+    .map(i => $bold(v)_#{i+1} = #render(vs.at(i))$)
+    .join([,] + h(1em))
 )
 
-#let i = (
-  (-4, 3),
-  (-7, 5)
-)
+#let bars = ($|$,) * 4
+#let names = range(1,5).map(x => $bold(v)_#x$)
 
-#show_multiply(h,i)
-#show_multiply(i,h)
+$ #math.mat(..(bars,names,bars)) = #render(horizontal_cat(..vs)) $
+
+#pagebreak()
+
+= Building a Matrix out of Row Vectors
+
+#let v1 = row_vector(1,5,2,-1)
+#let v2 = row_vector(1,-1,0,0.5)
+#let v3 = row_vector(0,2,1,1)
+#let v4 = row_vector(6,0,1,-1)
+#let vs = (v1,v2,v3,v4)
+
+#{
+  for i in range(4) {
+    $ bold(v)_#{i+1} = #render(vs.at(i)) $
+  }
+}
+
+#let namerows = range(1,5).map(x => ($-$,$bold(v)_#x$,$-$))
+
+$ #math.mat(..namerows) = #render(vertical_cat(..vs)) $

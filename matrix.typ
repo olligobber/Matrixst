@@ -290,3 +290,132 @@
     return multiply(x, m)
   }
 }
+
+#let column_vector(..l) = {
+  if l.named() != (:) {
+    panic("column vector does not take named arguments")
+  }
+  let l = l.pos()
+  if l.len() == 0 {
+    panic("cannot make column vector: input array has no elements")
+  }
+  for x in l {
+    if type(x) != int and type(x) != float {
+      panic("cannot make column vector: elements must all be numbers")
+    }
+  }
+  return l.map(x => (x,))
+}
+
+#let row_vector(..l) = {
+  if l.named() != (:) {
+    panic("row vector does not take named arguments")
+  }
+  let l = l.pos()
+  if l.len() == 0 {
+    panic("cannot make row vector: input has no elements")
+  }
+  for x in l {
+    if type(x) != int and type(x) != float {
+      panic("cannot make row vector: elements must all be numbers")
+    }
+  }
+  return (l,)
+}
+
+#let diagonal(..l) = {
+  if l.named() != (:) {
+    panic("diagonal matrix does not take named arguments")
+  }
+  let l = l.pos()
+  if l.len() == 0 {
+    panic("cannot make diagonal matrix: input has no elements") 
+  }
+  for x in l {
+    if type(x) != int and type(x) != float {
+      panic("cannot make diagonal matrix: elements must all be numbers")
+    }
+  }
+  let n = l.len()
+  let result = ()
+  for i in range(n) {
+    result.push(())
+    for j in range(n) {
+      if i == j {
+        result.at(-1).push(l.at(i))
+      } else {
+        result.at(-1).push(0)
+      }
+    }
+  }
+  return result
+}
+
+#let horizontal_cat(..ms) = {
+  if ms.named() != (:) {
+    panic("horizontal concatenation does not take named arguments")
+  }
+  let ms = ms.pos()
+  if ms.len() < 1 {
+    panic("cannot concatenate zero matrices: matrices must have positive size")
+  }
+  if ms.len() == 1 {
+    return ms.at(0)
+  }
+  if ms.len() > 2 {
+    let result = ms.at(0)
+    for i in range(1, ms.len()) {
+      result = horizontal_cat(result, ms.at(i))
+    }
+    return result
+  }
+  let (m,n) = ms
+  let (m_rows, m_cols) = dimension(m)
+  let (n_rows, n_cols) = dimension(n)
+  if m_rows != n_rows {
+    panic("cannot concatenate matrices horizontally, mismatched number of rows")
+  }
+  let rows = m_rows 
+  let cols = m_cols + n_cols
+  let result = ()
+  for i in range(rows) {
+    result.push(m.at(i) + n.at(i))
+  }
+  return result
+}
+
+#let vertical_cat(..ms) = {
+  if ms.named() != (:) {
+    panic("vertical concatenation does not take named arguments")
+  }
+  let ms = ms.pos()
+  if ms.len() < 1 {
+    panic("cannot concatenate zero matrices: matrices must have positive size")
+  }
+  if ms.len() == 1 {
+    return ms.at(0)
+  }
+  if ms.len() > 2 {
+    let result = ms.at(0)
+    for i in range(1, ms.len()) {
+      result = vertical_cat(result, ms.at(i))
+    }
+    return result
+  }
+  let (m,n) = ms
+  let (m_rows, m_cols) = dimension(m)
+  let (n_rows, n_cols) = dimension(n)
+  if m_cols != n_cols {
+    panic("cannot concatenate matrices vertically, mismatched number of columns")
+  }
+  let rows = m_rows + n_rows
+  let cols = m_cols
+  let result = m + n
+  return result
+}
+
+#let show_multiply(..ms) = $ 
+  #ms.pos().map(render).join() = #render(multiply(..ms)) 
+$
+
+#let show_power(m, i) = $ #render(m)^#i = #render(power(m,i)) $
